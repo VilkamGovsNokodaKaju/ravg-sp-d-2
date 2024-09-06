@@ -31,9 +31,10 @@ app.post('/vote', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid or already used code' });
     }
 
-    codeEntry.used = true;
-    writeCodes(codesData);
+    codeEntry.used = true;  // Mark the code as used
+    writeCodes(codesData);  // Save the updated codes
 
+    // Now record the vote in Google Sheets
     try {
         const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
         await doc.useServiceAccountAuth({
@@ -42,17 +43,16 @@ app.post('/vote', async (req, res) => {
         });
 
         await doc.loadInfo();
-        const sheet = doc.sheetsByIndex[0];
+        const sheet = doc.sheetsByIndex[0];  // Assuming the first sheet is for vote results
         await sheet.addRow({ Code: code, Project: project });
 
         res.json({ success: true, message: 'Vote recorded successfully!' });
-} catch (error) {
-    console.error('Error Details:', error.response ? error.response.data : error); // Log detailed error with more context
-    res.status(500).json({ success: false, message: 'An error occurred while connecting to Google Sheets' });
-}
-
+    } catch (error) {
+        console.error('Error Details:', error.response ? error.response.data : error);  // Correct error handling
+        res.status(500).json({ success: false, message: 'An error occurred while connecting to Google Sheets' });
     }
 });
+
 
 
 
