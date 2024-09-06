@@ -1,0 +1,12 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+label {
+    margin: 10px 0;
+}
+
+input[type="text"], input[type="radio"] {
+    margin-right: 10px;
+}
