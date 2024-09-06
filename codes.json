@@ -1,0 +1,6 @@
+{
+  "codes": [
+    {"code": "ABC123", "used": false},
+    {"code": "XYZ456", "used": false}
+  ]
+}
