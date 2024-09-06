@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const fs = require('fs');  // For reading and writing the codes.json file
+const fs = require('fs');  // For reading and writing to codes.json
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const dotenv = require('dotenv');
 
@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const codesFilePath = './codes.json';  // Path to your verification codes file
+const codesFilePath = './codes.json';  // Path to codes.json
 
 app.use(bodyParser.json());
 
