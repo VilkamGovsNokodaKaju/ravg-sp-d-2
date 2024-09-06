@@ -54,9 +54,8 @@ app.post('/vote', async (req, res) => {
     } catch (error) {
     console.error("Google Sheets API error:", error.message);  // Log detailed error message
     res.status(500).json({ success: false, message: "An error occurred while connecting to Google Sheets" });
-}
+	}
 
-    }
 });
 
 
