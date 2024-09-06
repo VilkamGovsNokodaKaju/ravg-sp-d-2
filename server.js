@@ -24,18 +24,16 @@ function writeCodes(codes) {
 
 app.post('/vote', async (req, res) => {
     const { code, project } = req.body;
-    const codesData = readCodes();  // Read the current verification codes
-    const codeEntry = codesData.codes.find(c => c.code === code && !c.used);  // Check if code is valid and not used
+    const codesData = readCodes();
+    const codeEntry = codesData.codes.find(c => c.code === code && !c.used);
 
     if (!codeEntry) {
         return res.status(400).json({ success: false, message: 'Invalid or already used code' });
     }
 
-    // Mark the code as used
     codeEntry.used = true;
-    writeCodes(codesData);  // Save the updated codes
+    writeCodes(codesData);
 
-    // Now record the vote in Google Sheets
     try {
         const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
         await doc.useServiceAccountAuth({
@@ -44,15 +42,17 @@ app.post('/vote', async (req, res) => {
         });
 
         await doc.loadInfo();
-        const sheet = doc.sheetsByIndex[0];  // Assuming the first sheet is for vote results
+        const sheet = doc.sheetsByIndex[0];
         await sheet.addRow({ Code: code, Project: project });
 
         res.json({ success: true, message: 'Vote recorded successfully!' });
     } catch (error) {
-        console.error(error);
+        console.error('Failed to record vote:', error); // Log detailed error
         res.status(500).json({ success: false, message: 'An error occurred' });
     }
 });
+
+
 
 
 // Serve static files (HTML, CSS, JS)
