@@ -12,29 +12,33 @@ const codesFilePath = './codes.json';  // Path to codes.json
 
 app.use(bodyParser.json());
 
-// Function to read the verification codes from codes.json
+
+// Read verification codes from codes.json
 function readCodes() {
-  return JSON.parse(fs.readFileSync(codesFilePath, 'utf8'));
+    return JSON.parse(fs.readFileSync(codesFilePath, 'utf8'));
 }
 
-// Function to write updated codes back to codes.json
+// Write updated codes back to codes.json
 function writeCodes(codes) {
-  fs.writeFileSync(codesFilePath, JSON.stringify(codes, null, 2), 'utf8');
+    fs.writeFileSync(codesFilePath, JSON.stringify(codes, null, 2), 'utf8');
 }
+
 
 app.post('/vote', async (req, res) => {
     const { code, project } = req.body;
+    console.log("Received code:", code);  // Debugging - Log received code
     const codesData = readCodes();
-    const codeEntry = codesData.codes.find(c => c.code === code && !c.used);
+    console.log("Codes data:", codesData);  // Debugging - Log all codes data
 
+    const codeEntry = codesData.codes.find(c => c.code === code && !c.used);
     if (!codeEntry) {
+        console.log("Invalid or already used code:", code);  // Debugging - Log invalid code
         return res.status(400).json({ success: false, message: 'Invalid or already used code' });
     }
 
-    codeEntry.used = true;  // Mark the code as used
-    writeCodes(codesData);  // Save the updated codes
+    codeEntry.used = true;
+    writeCodes(codesData);
 
-    // Now record the vote in Google Sheets
     try {
         const doc = new GoogleSpreadsheet(process.env.GOOGLE_SHEET_ID);
         await doc.useServiceAccountAuth({
@@ -43,15 +47,19 @@ app.post('/vote', async (req, res) => {
         });
 
         await doc.loadInfo();
-        const sheet = doc.sheetsByIndex[0];  // Assuming the first sheet is for vote results
+        const sheet = doc.sheetsByIndex[0];
         await sheet.addRow({ Code: code, Project: project });
 
         res.json({ success: true, message: 'Vote recorded successfully!' });
     } catch (error) {
-        console.error('Error Details:', error.response ? error.response.data : error);  // Correct error handling
-        res.status(500).json({ success: false, message: 'An error occurred while connecting to Google Sheets' });
+    console.error("Google Sheets API error:", error.message);  // Log detailed error message
+    res.status(500).json({ success: false, message: "An error occurred while connecting to Google Sheets" });
+}
+
     }
 });
+
+
 
 
 
