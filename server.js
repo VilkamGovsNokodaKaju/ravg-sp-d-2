@@ -22,7 +22,6 @@ function writeCodes(codes) {
   fs.writeFileSync(codesFilePath, JSON.stringify(codes, null, 2), 'utf8');
 }
 
-// POST route to handle voting
 app.post('/vote', async (req, res) => {
     const { code, project } = req.body;
     const codesData = readCodes();  // Read the current verification codes
@@ -54,6 +53,7 @@ app.post('/vote', async (req, res) => {
         res.status(500).json({ success: false, message: 'An error occurred' });
     }
 });
+
 
 // Serve static files (HTML, CSS, JS)
 app.use(express.static('public'));

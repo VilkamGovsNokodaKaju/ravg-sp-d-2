@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<form id="voteForm" method="POST">
+<form id="voteForm" method="POST" action="/vote">
   <label for="code">Enter your unique code:</label>
   <input type="text" id="code" name="code" required>
 
@@ -16,10 +16,11 @@
   <label><input type="radio" name="project" value="Project 1" required> Project 1</label><br>
   <label><input type="radio" name="project" value="Project 2"> Project 2</label><br>
   <label><input type="radio" name="project" value="Project 3"> Project 3</label><br>
-  <!-- Add more project options as needed -->
+  <!-- Add more projects as needed -->
 
   <button type="submit">Submit Vote</button>
 </form>
+
 
 
 <script src="script.js"></script>
