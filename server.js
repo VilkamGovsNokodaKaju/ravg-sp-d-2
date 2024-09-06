@@ -46,9 +46,11 @@ app.post('/vote', async (req, res) => {
         await sheet.addRow({ Code: code, Project: project });
 
         res.json({ success: true, message: 'Vote recorded successfully!' });
-    } catch (error) {
-        console.error('Failed to record vote:', error); // Log detailed error
-        res.status(500).json({ success: false, message: 'An error occurred' });
+} catch (error) {
+    console.error('Error Details:', error.response ? error.response.data : error); // Log detailed error with more context
+    res.status(500).json({ success: false, message: 'An error occurred while connecting to Google Sheets' });
+}
+
     }
 });
 
